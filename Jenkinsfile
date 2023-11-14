@@ -1,13 +1,16 @@
 pipeline {
-    agent any
-    
-    environment {
-        SONARQUBE_HOME = tool 'SonarQube-Scanner'
-        MAVEN_HOME = tool 'Maven'
+
+    agent {
+        docker {
+            image 'maven:3.9.5-eclipse-temurin-17-alpine'
+            args '-v /root/.m2:/root/.m2'
+        }
+        label 'linux'
     }
     
     options {
         skipStagesAfterUnstable()
+        buildDiscarder(logRotator(numToKeepStr: '5'))
     }
     stages {
         stage('Build') {
@@ -16,16 +19,14 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                // Run SonarQube analysis
-                script {
-                    withSonarQubeEnv('SonarQube-Server') {
-                        sh "${MAVEN_HOME}/bin/mvn sonar:sonar"
-                    }
+    stage('Scan') {
+        steps {
+            withSonarQubeEnv(installationName: 'sq1') { 
+            sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
                 }
             }
         }
+
 
         stage('Test') {
             steps {
