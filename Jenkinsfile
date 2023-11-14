@@ -29,7 +29,7 @@ pipeline {
 
     post {
         always {
-            // Cleanup or additional steps that should run regardless of success or failure
+            junit 'target/surefire-reports/*.xml'
         }
     }
 }
