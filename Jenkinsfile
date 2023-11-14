@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_HOME = tool 'SonarQube-Scanner'
-        MAVEN_HOME = tool 'Maven'
+        SONARQUBE_HOME = tool 'SonarQube-Scanner' // need to install in jenkins
+        MAVEN_HOME = tool 'Maven' // need ti instal in jenkins
     }
 
     stages {
@@ -19,8 +19,10 @@ pipeline {
                     def mavenHome = tool 'Maven'
                     def scannerHome = tool 'SonarQube-Scanner'
 
-                    withEnv(["PATH+MAVEN=${mavenHome}/bin", "PATH+SONARQUBE_SCANNER=${scannerHome}/bin"]) {
-                        sh 'mvn clean install sonar:sonar'
+                 withSonarQubeEnv('sq1') {
+                        withEnv(["PATH+MAVEN=${mavenHome}/bin", "PATH+SONARQUBE_SCANNER=${scannerHome}/bin"]) {
+                            sh 'mvn clean install sonar:sonar'
+                        }
                     }
                 }
             }
