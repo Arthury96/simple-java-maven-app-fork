@@ -1,20 +1,35 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.5-eclipse-temurin-17-alpine'
-            args '-v /root/.m2:/root/.m2'
+    agent any
+
+    environment {
+        SONARQUBE_HOME = tool 'SonarQube-Scanner'
+        MAVEN_HOME = tool 'Maven'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build and SonarQube Analysis') {
+            steps {
+                script {
+                    def mavenHome = tool 'Maven'
+                    def scannerHome = tool 'SonarQube-Scanner'
+
+                    withEnv(["PATH+MAVEN=${mavenHome}/bin", "PATH+SONARQUBE_SCANNER=${scannerHome}/bin"]) {
+                        sh 'mvn clean install sonar:sonar'
+                    }
+                }
+            }
         }
     }
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
-  stages {
-    stage('Scan') {
-      steps {
-        withSonarQubeEnv(installationName: 'sq1') { 
-          sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
+
+    post {
+        always {
+            // Cleanup or additional steps that should run regardless of success or failure
         }
-      }
     }
-  }
 }
