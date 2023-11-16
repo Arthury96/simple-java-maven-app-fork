@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    tools {
-        jdk "Java17"
-    }
 
     environment {
         SONARQUBE_HOME = tool 'SonarQube-Scanner' // need to install in jenkins
