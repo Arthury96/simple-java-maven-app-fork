@@ -37,19 +37,8 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 script {
-                    def server = Artifactory.server NEXUS_SERVER
-                    def credentials = Jenkins.instance.get('nexusCredential')
-
-                    server.publishBuildInfo buildInfo: 'buildinfo.json'
-
-                    server.upload spec: '''{
-                        "files": [
-                            {
-                                "pattern": "target/*.jar",
-                                "target": "your/nexus/repository/path/"
-                            }
-                        ]
-                    }''', buildInfo: 'buildinfo.json'
+                    // Deploy artifacts to Nexus using Maven
+                    sh "${MAVEN_HOME}/bin/mvn deploy -Dmaven.test.skip=true -DaltDeploymentRepository=nexus::default::${NEXUS_SERVER}/repository/maven-releases/"
                 }
             }
         }
