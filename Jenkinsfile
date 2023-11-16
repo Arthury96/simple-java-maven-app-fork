@@ -37,6 +37,7 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 script {
+                    sh "${MAVEN_HOME}/bin/mvn clean install"
                     // Deploy artifacts to Nexus using Maven
                     sh "${MAVEN_HOME}/bin/mvn deploy -Dmaven.test.skip=true -DaltDeploymentRepository=nexus::default::${NEXUS_SERVER}/repository/LoginWebApp/"
                 }
