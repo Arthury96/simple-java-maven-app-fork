@@ -21,26 +21,26 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         checkout scm
+        //     }
+        // }
 
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    def mavenHome = tool 'Maven'
-                    def scannerHome = tool 'SonarQube-Scanner'
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         script {
+        //             def mavenHome = tool 'Maven'
+        //             def scannerHome = tool 'SonarQube-Scanner'
 
-                 withSonarQubeEnv('sq1') {
-                        withEnv(["PATH+MAVEN=${mavenHome}/bin", "PATH+SONARQUBE_SCANNER=${scannerHome}/bin"]) {
-                            sh 'mvn clean install sonar:sonar'
-                        }
-                    }
-                }
-            }
-        }
+        //          withSonarQubeEnv('sq1') {
+        //                 withEnv(["PATH+MAVEN=${mavenHome}/bin", "PATH+SONARQUBE_SCANNER=${scannerHome}/bin"]) {
+        //                     sh 'mvn clean install sonar:sonar'
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         
         stage("publish to nexus") {
             steps {
