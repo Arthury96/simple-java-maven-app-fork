@@ -1,10 +1,13 @@
 pipeline {
     agent any
+    tools {
+        jdk "Java17"
+    }
 
     environment {
         SONARQUBE_HOME = tool 'SonarQube-Scanner' // need to install in jenkins
         MAVEN_HOME = tool 'Maven' // need ti instal in jenkins
-        jdk "Java17"
+        
         
         NEXUS_VERSION = "nexus3"
         // This can be http or https
